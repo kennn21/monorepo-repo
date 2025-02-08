@@ -32,9 +32,3 @@ pnpm-debug.log*
 
 # Turbo
 .turbo
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo

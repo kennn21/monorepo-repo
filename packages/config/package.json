@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": ["eslint-preset.js", "typescript-config.js"],
+  "files": [
+    "eslint-preset.js",
+    "typescript-config.js"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC"
