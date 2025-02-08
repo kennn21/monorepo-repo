@@ -1,5 +1,11 @@
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface AuthState {
-  user: string | null;
+  user: User | null;
 }
 
 export enum AuthActionTypes {
@@ -9,7 +15,7 @@ export enum AuthActionTypes {
 
 interface LoginAction {
   type: AuthActionTypes.LOGIN;
-  payload: string;
+  payload: User;
 }
 
 interface LogoutAction {

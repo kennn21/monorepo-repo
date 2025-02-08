@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "types": "workspace:*",
+    "creds": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",

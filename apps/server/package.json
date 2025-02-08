@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "creds": "workspace:*",
+    "types": "workspace:*",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.1",
     "express": "^4.21.2",

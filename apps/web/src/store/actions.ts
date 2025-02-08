@@ -1,6 +1,6 @@
-import { AuthActions, AuthActionTypes } from 'types';
+import { AuthActions, AuthActionTypes, User } from 'types';
 
-export const login = (user: string): AuthActions => ({
+export const login = (user: User): AuthActions => ({
   type: AuthActionTypes.LOGIN,
   payload: user,
 });

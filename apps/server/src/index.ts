@@ -1,12 +1,33 @@
 import express from 'express';
+import cors from 'cors';
+import userRoutes from './routes/user.route';
+import './config/firebase';
 
 const app = express();
-const port = process.env.PORT || 8000;
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Express + TypeScript Server' });
-});
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Routes
+app.use('/api/users', userRoutes);
+
+// Error handling middleware
+app.use(
+  (
+    err: Error,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!' });
+  },
+);
+
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

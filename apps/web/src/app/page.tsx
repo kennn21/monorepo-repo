@@ -1,10 +1,13 @@
 'use client';
-import { Input } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export default function Home() {
-  return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
-      <Input />
-    </div>
-  );
+export default function RootPage() {
+  const router = useRouter();
+
+  // Set Dashboard as homepage, because this page is out of context
+  useEffect(() => {
+    router.replace('/dashboard');
+  }, [router]);
+  return <></>;
 }

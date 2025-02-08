@@ -23,7 +23,12 @@
     "turbo": "latest"
   },
   "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "cors": "^2.8.5",
     "eslint-config-prettier": "^10.0.1",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.1.0",
     "prettier-plugin-tailwindcss": "^0.6.11"
   }
 }

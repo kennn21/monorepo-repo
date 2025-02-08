@@ -1,27 +1,19 @@
 'use client';
 
-import { store } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { Provider } from 'react-redux';
+import { createContext, ReactNode, useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { AuthState } from 'types';
 
-interface AppContextType {
-  user: string | null;
-  setUser: (user: string | null) => void;
-}
+const AppContext = createContext(undefined);
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
-
+// I like to use global app provider for all pages (except root, to allow metadata injection)
+// for putting all providers and global event handlers (e.g when user state changed, do something)
+// to achieve:
+// 1. Scalability: Allow other providers (custom or libraries) to be added here
+// 2. Readability: Centralized all providers and global event handlers
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
-
   const router = useRouter();
 
   const darkTheme = createTheme({
@@ -33,16 +25,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
+  const user = useSelector((state: AuthState) => state.user);
+
   useEffect(() => {
-    // TODO: Set auth checking condition
-    router.push('/auth/login');
-  }, [router]);
+    if (!user) {
+      router.replace('/auth/login');
+    }
+  }, [router, user]);
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
-      <Provider store={store}>
-        <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
-      </Provider>
+    <AppContext.Provider value={undefined}>
+      <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
     </AppContext.Provider>
   );
 };
