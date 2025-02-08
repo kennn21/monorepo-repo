@@ -1,5 +1,6 @@
 'use client';
 
+import { store } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import {
@@ -9,6 +10,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { Provider } from 'react-redux';
 
 interface AppContextType {
   user: string | null;
@@ -38,7 +40,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppContext.Provider value={{ user, setUser }}>
-      <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+      </Provider>
     </AppContext.Provider>
   );
 };
