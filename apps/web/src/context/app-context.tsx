@@ -1,8 +1,9 @@
 'use client';
 
-import { attachIdToken, detachIdToken } from '@/lib/api';
+import { attachIdToken, detachIdToken } from '@/apis/api-builder';
 import { RootState, store } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -24,6 +25,7 @@ const AppContext = createContext(undefined);
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const [interceptor, setInterceptor] = useState<number | undefined>();
+  const [queryClient] = useState(() => new QueryClient());
 
   const darkTheme = createTheme({
     palette: {
@@ -45,13 +47,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [reduxPersistor]);
 
   useEffect(() => {
     if (hydrated && !user) {
       router.replace('/auth/login');
     }
+    // meant to be
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, hydrated]);
 
@@ -65,12 +67,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       console.log(interceptor);
       setInterceptor(interceptor);
     }
+    // meant to be
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (
     <AppContext.Provider value={undefined}>
-      <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+      </QueryClientProvider>
     </AppContext.Provider>
   );
 };

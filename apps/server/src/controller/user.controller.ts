@@ -6,13 +6,13 @@ export class UserController {
   static async getAllUsers(req: Request, res: Response) {
     try {
       const listUsersResult = await admin.auth().listUsers();
-      res.json({
-        users: listUsersResult.users.map((user) => ({
+      res.json(
+        listUsersResult.users.map((user) => ({
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
         })),
-      });
+      );
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Failed to fetch users' });
