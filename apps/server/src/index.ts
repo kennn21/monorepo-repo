@@ -6,7 +6,7 @@ import './config/firebase';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: true })); // Enable CORS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,9 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { omit } from 'lodash';
 
+const isEmulator = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true';
+const apiBaseURL = isEmulator
+  ? `http://127.0.0.1:5001/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}/us-central1/` // Local Firebase Emulator URL
+  : process.env.NEXT_PUBLIC_BASE_API_URL; // Production Firebase
+
 // Create an Axios instance
 export const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_API_URL || 'http://localhost:8080',
+  baseURL: apiBaseURL || 'http://localhost:8080',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
