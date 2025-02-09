@@ -1,10 +1,18 @@
 'use client';
 
+import { attachIdToken, detachIdToken } from '@/lib/api';
+import { RootState, store } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { createContext, ReactNode, useContext, useEffect } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
-import { AuthState } from 'types';
+import { persistStore } from 'redux-persist';
 
 const AppContext = createContext(undefined);
 
@@ -15,6 +23,7 @@ const AppContext = createContext(undefined);
 // 2. Readability: Centralized all providers and global event handlers
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const [interceptor, setInterceptor] = useState<number | undefined>();
 
   const darkTheme = createTheme({
     palette: {
@@ -25,13 +34,39 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  const user = useSelector((state: AuthState) => state.user);
+  const reduxPersistor = persistStore(store);
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = reduxPersistor.subscribe(() => {
+      setHydrated(true);
+    });
+
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && !user) {
+      router.replace('/auth/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, hydrated]);
 
   useEffect(() => {
     if (!user) {
-      router.replace('/auth/login');
+      if (interceptor) {
+        detachIdToken(interceptor);
+      }
+    } else {
+      const interceptor = attachIdToken(user.idToken);
+      console.log(interceptor);
+      setInterceptor(interceptor);
     }
-  }, [router, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <AppContext.Provider value={undefined}>

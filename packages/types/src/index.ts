@@ -1,11 +1,14 @@
+import { AnyAction } from 'redux';
+
 export interface User {
-  id: string;
-  name: string;
+  uid: string;
   email: string;
+  idToken: string;
 }
 
 export interface AuthState {
   user: User | null;
+  lastUpdated: number;
 }
 
 export enum AuthActionTypes {
@@ -13,12 +16,12 @@ export enum AuthActionTypes {
   LOGOUT = 'LOGOUT',
 }
 
-interface LoginAction {
+interface LoginAction extends AnyAction {
   type: AuthActionTypes.LOGIN;
   payload: User;
 }
 
-interface LogoutAction {
+interface LogoutAction extends AnyAction {
   type: AuthActionTypes.LOGOUT;
 }
 

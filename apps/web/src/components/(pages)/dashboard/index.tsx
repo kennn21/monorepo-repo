@@ -1,5 +1,11 @@
+'use client';
+import { RootState } from '@/store/store';
+import { useSelector } from 'react-redux';
+
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  return <div>Hello {user?.email}!</div>;
 };
 
 export default Dashboard;

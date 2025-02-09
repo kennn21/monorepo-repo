@@ -1,4 +1,4 @@
-import { AuthActions, AuthActionTypes, User } from 'types';
+import { AuthActionTypes, User, AuthActions } from 'types';
 
 export const login = (user: User): AuthActions => ({
   type: AuthActionTypes.LOGIN,

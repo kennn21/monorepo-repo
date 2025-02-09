@@ -1,15 +1,26 @@
 'use client';
 
+import { handleGoogleLogin } from '@/lib/auth';
+import { login } from '@/store/actions';
+import { AppDispatch } from '@/store/store';
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { TextField, Button, Box, Typography, Container } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Logging in with:', { email, password });
+    const user = await handleGoogleLogin(email, password);
+
+    if (user) {
+      // save user data in redux
+      dispatch(login(user));
+    }
   };
 
   return (
