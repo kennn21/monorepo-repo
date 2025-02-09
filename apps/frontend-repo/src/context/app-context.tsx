@@ -2,7 +2,7 @@
 
 import { attachIdToken, detachIdToken } from '@/apis/api-builder';
 import { logout } from '@/store/actions';
-import { AppDispatch, RootState, store } from '@/store/store';
+import { AppDispatch, RootState } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,6 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { persistStore } from 'redux-persist';
 
 const AppContext = createContext<{ signOut: () => void }>({
   signOut: () => {},
@@ -39,21 +38,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  const reduxPersistor = persistStore(store);
-
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = reduxPersistor.subscribe(() => {
-      setHydrated(true);
-    });
-
-    return () => unsubscribe();
-    // only call once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (!user) {
