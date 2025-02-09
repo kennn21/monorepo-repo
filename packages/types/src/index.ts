@@ -3,7 +3,7 @@ import { AnyAction } from 'redux';
 export interface User {
   uid: string;
   email: string;
-  idToken: string;
+  idToken?: string;
 }
 
 export interface AuthState {

@@ -69,7 +69,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         detachIdToken(interceptor);
       }
     } else {
-      const interceptor = attachIdToken(user.idToken);
+      const interceptor = attachIdToken(user.idToken ?? '');
       // console.log(interceptor);
       setInterceptor(interceptor);
     }
