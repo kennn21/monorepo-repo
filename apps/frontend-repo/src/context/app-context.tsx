@@ -56,12 +56,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (hydrated && !user) {
+    if (!user) {
       router.replace('/auth/login');
     }
     // meant to be
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, hydrated]);
+  }, [user]);
 
   useEffect(() => {
     if (!user) {
