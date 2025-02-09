@@ -17,7 +17,6 @@ export const firebaseAuth = async (
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    console.log(decodedToken);
     (req as any).user = decodedToken; // Attach user data to request
     next(); // Proceed to next middleware or route handler
   } catch (error) {

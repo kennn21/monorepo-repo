@@ -1,7 +1,8 @@
 'use client';
 
 import { attachIdToken, detachIdToken } from '@/apis/api-builder';
-import { RootState, store } from '@/store/store';
+import { logout } from '@/store/actions';
+import { AppDispatch, RootState, store } from '@/store/store';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -12,10 +13,12 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { persistStore } from 'redux-persist';
 
-const AppContext = createContext(undefined);
+const AppContext = createContext<{ signOut: () => void }>({
+  signOut: () => {},
+});
 
 // I like to use global app provider for all pages (except root, to allow metadata injection)
 // for putting all providers and global event handlers (e.g when user state changed, do something)
@@ -39,6 +42,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const reduxPersistor = persistStore(store);
 
   const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch<AppDispatch>();
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -47,7 +51,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-  }, [reduxPersistor]);
+    // only call once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (hydrated && !user) {
@@ -64,15 +70,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
     } else {
       const interceptor = attachIdToken(user.idToken);
-      console.log(interceptor);
+      // console.log(interceptor);
       setInterceptor(interceptor);
     }
     // meant to be
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  const signOut = () => {
+    dispatch(logout());
+  };
+
   return (
-    <AppContext.Provider value={undefined}>
+    <AppContext.Provider value={{ signOut }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
       </QueryClientProvider>

@@ -13,9 +13,13 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import { useAppContext } from '@/context/app-context';
 
 const Dashboard = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
+
+  const { signOut } = useAppContext();
+
   const {
     data: users,
     refetch,
@@ -80,6 +84,7 @@ const Dashboard = () => {
           </>
         )}
       </Box>
+      <Button onClick={signOut}>Sign Out</Button>
     </Box>
   );
 };

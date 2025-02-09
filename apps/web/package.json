@@ -21,6 +21,7 @@
     "axios": "^1.7.9",
     "creds": "workspace:*",
     "firebase": "^11.3.0",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "next": "15.1.6",
     "prettier": "^3.1.0",
