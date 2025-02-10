@@ -1,7 +1,9 @@
 'use client';
+import { useState } from 'react';
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import api from '@/apis';
 import { User } from 'types';
 import {
@@ -12,13 +14,22 @@ import {
   Box,
   Alert,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from '@mui/material';
 import { useAppContext } from '@/context/app-context';
 
 const Dashboard = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
-
   const { signOut } = useAppContext();
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
 
   const {
     data: users,
@@ -27,16 +38,49 @@ const Dashboard = () => {
     isLoading,
     isFetching,
   } = useQuery({
-    // no need key for manual trigger
     queryKey: ['users'],
-    // use global types interface (whole repo-scaled)
     queryFn: () => api.users.getAll.call<User[]>(),
-    // manually triggered by button
     enabled: false,
     initialData: [],
   });
+
+  const updateUserMutation = useMutation({
+    mutationFn: (updatedUser: User) =>
+      api.users.update.call({
+        params: { id: updatedUser.uid },
+        data: updatedUser,
+      }),
+    onSuccess: () => {
+      refetch();
+      setOpen(false);
+    },
+  });
+
   const handlePress = () => {
     refetch();
+  };
+
+  const handleOpenDialog = (user: User) => {
+    setSelectedUser(user);
+    setEmail(user.email);
+    setName(user.name || '');
+    setAge(user.age ? String(user.age) : '');
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  const handleUpdateUser = () => {
+    if (selectedUser) {
+      updateUserMutation.mutate({
+        ...selectedUser,
+        email,
+        name,
+        age: Number(age),
+      });
+    }
   };
 
   return (
@@ -66,16 +110,22 @@ const Dashboard = () => {
               <Box display="flex" flexDirection="column" gap={2} flex={1}>
                 {users.map((acc) => (
                   <Card key={acc.uid} variant="outlined">
-                    <CardContent>
-                      {Object.entries(acc).map(([key, value]) => (
-                        <Typography
-                          key={key}
-                          variant="body2"
-                          color="textSecondary"
-                        >
-                          <strong>{key}:</strong> {value}
-                        </Typography>
-                      ))}
+                    <CardContent className="flex flex-row">
+                      <Box className="flex w-full flex-col">
+                        {Object.entries(acc).map(([key, value]) => (
+                          <Typography
+                            key={key}
+                            variant="body2"
+                            color="textSecondary"
+                          >
+                            <strong>{key}:</strong> {value}
+                          </Typography>
+                        ))}
+                      </Box>
+
+                      <Button onClick={() => handleOpenDialog(acc)}>
+                        <ModeEditIcon />
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
@@ -85,6 +135,43 @@ const Dashboard = () => {
         )}
       </Box>
       <Button onClick={signOut}>Sign Out</Button>
+
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>Update User</DialogTitle>
+        <DialogContent className="">
+          <TextField
+            label="Email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            label="Name"
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            margin="dense"
+          />
+          <TextField
+            label="Age"
+            fullWidth
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            margin="dense"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button
+            onClick={handleUpdateUser}
+            color="primary"
+            variant="contained"
+          >
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

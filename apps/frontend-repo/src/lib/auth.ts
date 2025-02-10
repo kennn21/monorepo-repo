@@ -1,7 +1,7 @@
 import app, { auth } from '@/lib/firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { User } from 'types';
 import { jwtDecode } from 'jwt-decode';
+import { User } from 'types';
 
 export const checkTokenExpiry = async () => {
   const auth = getAuth(app);
@@ -27,7 +27,11 @@ export const handleGoogleLogin = async (email: string, password: string) => {
     // console.log(await checkTokenExpiry());
 
     // Attach to redux state
-    const user: User = { uid, email: email ?? '', idToken: idToken ?? '' };
+    const user: User = {
+      uid,
+      email: email ?? '',
+      idToken: idToken ?? '',
+    };
     return user;
   } catch (error) {
     console.error('Login Error:', error);

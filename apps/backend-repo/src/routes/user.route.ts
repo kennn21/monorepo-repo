@@ -8,5 +8,6 @@ router.use(firebaseAuth);
 
 router.get('/', UserController.getAllUsers);
 router.get('/:id', UserController.getUserById);
+router.patch('/:id', UserController.updateUser);
 
 export default router;

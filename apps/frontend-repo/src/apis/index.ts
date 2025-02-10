@@ -4,7 +4,8 @@ import ApiBuilder from '@/apis/api-builder';
 const api = {
   users: {
     getAll: new ApiBuilder('GET', '/users'),
-    getOne: new ApiBuilder('GET', '/users/[id]'),
+    getOne: new ApiBuilder('GET', '/users/:id'),
+    update: new ApiBuilder('PATCH', '/users/:id'),
   },
 };
 

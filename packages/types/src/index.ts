@@ -3,6 +3,8 @@ import { AnyAction } from 'redux';
 export interface User {
   uid: string;
   email: string;
+  name?: string;
+  age?: number;
   idToken?: string;
 }
 
