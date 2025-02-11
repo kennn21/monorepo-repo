@@ -2,14 +2,16 @@
   "name": "monorepo-repo",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@8.15.1",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "packageManager": "npm@21.0.0",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "start:dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "clean": "turbo run clean && rm -rf node_modules",
