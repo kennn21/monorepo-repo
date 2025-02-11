@@ -1,3 +1,3 @@
-import serviceAccount from '../secrets/.service-account.json';
+import serviceAccount from '../.service-account.json';
 
 export { serviceAccount };

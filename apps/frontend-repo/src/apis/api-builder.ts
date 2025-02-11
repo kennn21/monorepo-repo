@@ -8,7 +8,7 @@ const apiBaseURL = isEmulator
 
 // Create an Axios instance
 export const axiosInstance = axios.create({
-  baseURL: apiBaseURL || 'http://localhost:8080',
+  baseURL: apiBaseURL || 'http://localhost:8080/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
